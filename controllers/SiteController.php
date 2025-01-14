@@ -24,12 +24,12 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout'],
+                'only' => ['logout','upload'],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout','upload'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['@'], //for authenticated users
                     ],
                 ],
             ],
@@ -174,13 +174,14 @@ class SiteController extends Controller
         $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
-            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+            $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
             if ($model->upload()) {
-                // file is uploaded successfully
-                return;
+                Yii::$app->session->setFlash('success', 'Đã upload thành công!');
+                return $this->redirect(['site/upload']);;
             }
         }
 
         return $this->render('upload', ['model' => $model]);
     }
+
 }
