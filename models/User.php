@@ -28,6 +28,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
                 $this->authKey = \Yii::$app->security->generateRandomString();
+                $this->uuid = \Yii::$app->security->generateRandomString(16);
             }
             return true;
         }
@@ -87,5 +88,10 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     {
         return Yii::$app->getSecurity()->validatePassword($password, $this->password);
        
+    }
+
+    public function getImages()
+    {
+        return $this->hasMany(Images::class, ['user_id' => 'id']);
     }
 }

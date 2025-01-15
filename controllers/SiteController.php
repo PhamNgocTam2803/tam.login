@@ -12,6 +12,7 @@ use app\models\ContactForm;
 use app\models\SignUpForm;
 use app\models\UploadForm;
 use app\models\User;
+use yii\web\BadRequestHttpException;
 use yii\web\UploadedFile;
 
 class SiteController extends Controller
@@ -171,16 +172,19 @@ class SiteController extends Controller
     //Upload files
     public function actionUpload()
     {
+        $headers = Yii::$app->request->headers;
+        // dd($headers);
         $model = new UploadForm();
-
         if (Yii::$app->request->isPost) {
+            if ($headers->get('origin')!=='http://tam.login.local:8080'){
+                throw new BadRequestHttpException();
+            }
             $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
             if ($model->upload()) {
                 Yii::$app->session->setFlash('success', 'Đã upload thành công!');
                 return $this->redirect(['site/upload']);;
             }
         }
-
         return $this->render('upload', ['model' => $model]);
     }
 

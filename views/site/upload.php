@@ -1,8 +1,10 @@
 <?php
 use yii\widgets\ActiveForm;
+$array = Yii::$app->user->identity->images;
 ?>
 
 <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
+
 
     <?= $form->field($model, 'imageFiles[]')->fileInput(['multiple' => true, 'accept' => 'image/*', 'id' => 'input_image']) ?>
 
@@ -12,8 +14,27 @@ use yii\widgets\ActiveForm;
 
 
     </div>
-
+    
 <?php ActiveForm::end() ?>
+
+<table>
+    <?php foreach($array as $image){ ?>
+        <div>
+            <img src="/<?= $image->path?>">
+
+            <div x-data="{
+                removeImage: (id) => {
+                    <?php $array ?>.splice(id, 1);
+                }
+            }" >
+                <button type="button" @click="removeImage('<?= $image->id ?>')" >
+                    Remove
+                </button>
+            </div>
+
+        </div>
+    <?php } ?>
+</table>
 
 <script>
     document.getElementById('input_image').addEventListener('change', function(event) {

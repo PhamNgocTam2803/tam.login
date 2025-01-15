@@ -4,7 +4,7 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\web\UploadedFile;
-
+use WebPConvert\WebPConvert;
 class UploadForm extends Model
 {
     /**
@@ -21,19 +21,40 @@ class UploadForm extends Model
     
     public function upload()
     {
-        $folder_name = Yii::$app->user->identity->username;
-
+        $folder_name = Yii::$app->user->identity->uuid;
+        $pathWeb = Yii::$app->basePath . '/web';
         //dd($folder_name);
-        if (!is_dir($folder_name)) {
-            mkdir($folder_name . '/' . 'uploads', 0777, true); 
+        if (!is_dir($pathWeb.'/'.$folder_name.'/uploads/webp')) {
+            mkdir($pathWeb.'/'.$folder_name.'/uploads/webp', 0777, true); 
         }
+        
+        $path = $folder_name . '/' . 'uploads/';
         if ($this->validate()) { 
             foreach ($this->imageFiles as $file) {
-                $file->saveAs($folder_name . '/' . 'uploads' . '/' . $file->baseName . '.' . $file->extension);
+                $randomString = Yii::$app->security->generateRandomString(16);
+                $sourcePath = $path . $randomString . '.' . $file->extension; 
+                $file->saveAs($sourcePath);
+                //convert to webP
+                try {
+                    //code...
+                    $source = Yii::$app->basePath . '/web' . $sourcePath;
+                    $destination = $pathWeb . '/' . $folder_name . '/uploads/webp';
+                    $options = [];
+                    WebPConvert::convert($source, $destination, $options);
+                } catch (\Throwable $th) {
+                    throw $th;
+                }
+
+                $images_model = new Images();
+                $images_model->path = $path . $randomString . '.' . $file->extension;
+                $images_model->user_id = Yii::$app->user->identity->ID;
+                $images_model->created_date = date('Y/m/d H:i:s', time());
+                $images_model->save();
             }
             return true;
         } else {
             return false;
         }
+        
     }
 }

@@ -19,6 +19,7 @@ class m250107_082724_create_users_table extends Migration
             'password' => $this->text(),
             'authKey' => $this->text(),
             'accessToken' => $this->text(),
+            
         ]);
     }
 
