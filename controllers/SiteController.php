@@ -9,6 +9,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Images;
 use app\models\SignUpForm;
 use app\models\UploadForm;
 use app\models\User;
@@ -188,4 +189,36 @@ class SiteController extends Controller
         return $this->render('upload', ['model' => $model]);
     }
 
+    public function actionDeleteImage(){
+        if (Yii::$app->request->isPost) {
+            // Lấy dữ liệu JSON chuyển đổi thành PHP
+            $data = json_decode(Yii::$app->request->getRawBody(), true);
+            
+            // Kiểm tra có id không
+            if (isset($data['id'])) {
+                $imageId = $data['id']; 
+    
+                // Tìm ảnh chứa id được gửi từ client trong bảng Images
+                $image = Images::findOne($imageId);
+    
+                if ($image !== null) {
+                    $filePath = Yii::getAlias('@webroot') . '/' . $image->path; // Đường dẫn đầy đủ đến ảnh
+                    if (file_exists($filePath)) {
+                        unlink($filePath); // Xóa file
+                    }
+    
+                    // Xóa ảnh trong db
+                    $image->delete();
+    
+                    // phản hồi thành công
+                    return $this->asJson(['success' => true]);
+                } else {
+                    // trả ra lỗi nếu thất bại
+                    return $this->asJson(['success' => false, 'error' => 'Image not found.']);
+                }
+            }
+        }
+        // nếu request ko hợp lệ thì trả ra lỗi
+        return $this->asJson(['success' => false, 'error' => 'Invalid request.']);
+    }
 }

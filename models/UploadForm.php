@@ -35,15 +35,15 @@ class UploadForm extends Model
                 $sourcePath = $path . $randomString . '.' . $file->extension; 
                 $file->saveAs($sourcePath);
                 //convert to webP
-                try {
-                    //code...
-                    $source = Yii::$app->basePath . '/web' . $sourcePath;
-                    $destination = $pathWeb . '/' . $folder_name . '/uploads/webp';
-                    $options = [];
-                    WebPConvert::convert($source, $destination, $options);
-                } catch (\Throwable $th) {
-                    throw $th;
-                }
+                // try {
+                //     //code...
+                //     $source = Yii::$app->basePath . '/web' . $sourcePath;
+                //     $destination = $pathWeb . '/' . $folder_name . '/uploads/webp';
+                //     $options = [];
+                //     WebPConvert::convert($source, $destination, $options);
+                // } catch (\Throwable $th) {
+                //     throw $th;
+                // }
 
                 $images_model = new Images();
                 $images_model->path = $path . $randomString . '.' . $file->extension;

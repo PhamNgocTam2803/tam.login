@@ -17,24 +17,46 @@ $array = Yii::$app->user->identity->images;
     
 <?php ActiveForm::end() ?>
 
-<table>
-    <?php foreach($array as $image){ ?>
-        <div>
-            <img src="/<?= $image->path?>">
 
-            <div x-data="{
-                removeImage: (id) => {
-                    <?php $array ?>.splice(id, 1);
+<?php foreach($array as $image){ ?>
+    <div class="img-block">
+        <img src="/<?= $image->path?>" width="400px" >
+        <button type="button" class="remove-button" data-id="<?= $image->id?>">
+            Remove
+        </button>
+    </div>
+<?php } ?>
+
+
+<script>
+    const removeButton = document.querySelectorAll('.remove-button');
+    removeButton.forEach(button => {
+        button.addEventListener('click', event => {
+            const imgId = event.target.dataset.id;
+            fetch('/site/delete-image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content') 
+                },
+                body: JSON.stringify({id: imgId})
+            })
+            .then(response => response.json()) // data phản hồi của server được chuyển thành js
+            .then(data => {
+                if(data.success){
+                    button.closest('.img-block').remove();//phản hồi trả về là true thì xoá ảnh 
+                    alert('Đã xoá ảnh có ID: ' + imgId);
+                }else{
+                    alert('Bị lỗi:' + data.error); 
                 }
-            }" >
-                <button type="button" @click="removeImage('<?= $image->id ?>')" >
-                    Remove
-                </button>
-            </div>
-
-        </div>
-    <?php } ?>
-</table>
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        })
+    })
+              
+</script>
 
 <script>
     document.getElementById('input_image').addEventListener('change', function(event) {
@@ -63,3 +85,4 @@ $array = Yii::$app->user->identity->images;
     });
 
 </script>
+
