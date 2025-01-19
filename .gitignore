@@ -32,6 +32,6 @@ tests/_support/_generated
 #vagrant folder
 /.vagrant
 #node module
-/node_modules
+node_modules/
 #.env
 .env
