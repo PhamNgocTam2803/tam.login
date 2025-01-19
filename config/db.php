@@ -1,10 +1,13 @@
 <?php
-
+$host = $_ENV['MYSQL_HOST'];
+$dbase = $_ENV['MYSQL_DATABASE'];
+$username = $_ENV['MYSQL_USER'];
+$password = $_ENV['MYSQL_PASSWORD'];
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=tam.login',
-    'username' => 'root',
-    'password' => '',
+    'dsn' => "mysql:host=$host;dbname=$dbase",
+    'username' => $username,
+    'password' => $password,
     'charset' => 'utf8',
 
     // Schema cache options (for production environment)

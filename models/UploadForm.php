@@ -22,13 +22,15 @@ class UploadForm extends Model
     public function upload()
     {
         $folder_name = Yii::$app->user->identity->uuid;
-        $pathWeb = Yii::$app->basePath . '/web';
-        //dd($folder_name);
+        //$pathWeb = Yii::$app->basePath . '/web';
+        // dd($pathWeb);
+        $pathWeb = Yii::getAlias('@webroot');
+        
         if (!is_dir($pathWeb.'/'.$folder_name.'/uploads/webp')) {
             mkdir($pathWeb.'/'.$folder_name.'/uploads/webp', 0777, true); 
         }
         
-        $path = $folder_name . '/' . 'uploads/';
+        $path = $folder_name . '/uploads/';
         if ($this->validate()) { 
             foreach ($this->imageFiles as $file) {
                 $randomString = Yii::$app->security->generateRandomString(16);

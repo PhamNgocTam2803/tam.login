@@ -18,6 +18,9 @@ $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, 
 $this->registerMetaTag(['name' => 'description', 'content' => $this->params['meta_description'] ?? '']);
 $this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_keywords'] ?? '']);
 $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii::getAlias('@web/favicon.ico')]);
+$this->registerCssFile('@web/css/output.css',[
+    'depend' => [\yii\web\YiiAsset::class],
+]);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -25,7 +28,9 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <head>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=add" />
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
 </head>
 <body class="d-flex flex-column h-100">
 <?php $this->beginBody() ?>
@@ -45,6 +50,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             ['label' => 'Contact', 'url' => ['/site/contact']],
             ['label' => 'Signup', 'url' => ['/site/signup']],
             ['label' => 'Upload-Image', 'url' => ['/site/upload']],
+            ['label' => 'Todo-List', 'url' => ['/site/todo']],
             Yii::$app->user->isGuest
                 ? ['label' => 'Login', 'url' => ['/site/login']]
                 : '<li class="nav-item">'

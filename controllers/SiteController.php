@@ -26,10 +26,10 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout','upload'],
+                'only' => ['logout','upload','todo'],
                 'rules' => [
                     [
-                        'actions' => ['logout','upload'],
+                        'actions' => ['logout','upload','todo'],
                         'allow' => true,
                         'roles' => ['@'], //for authenticated users
                     ],
@@ -177,7 +177,7 @@ class SiteController extends Controller
         // dd($headers);
         $model = new UploadForm();
         if (Yii::$app->request->isPost) {
-            if ($headers->get('origin')!=='http://tam.login.local:8080'){
+            if ($headers->get('origin')!==$_ENV['DOMAIN_SITE']){
                 throw new BadRequestHttpException();
             }
             $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
@@ -220,5 +220,10 @@ class SiteController extends Controller
         }
         // nếu request ko hợp lệ thì trả ra lỗi
         return $this->asJson(['success' => false, 'error' => 'Invalid request.']);
+    }
+
+    //Todo-List
+    public function actionTodo(){
+        return $this->render('todo');
     }
 }
