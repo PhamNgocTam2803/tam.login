@@ -89,9 +89,14 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return Yii::$app->getSecurity()->validatePassword($password, $this->password);
        
     }
-
+    //One user has many images
     public function getImages()
     {
         return $this->hasMany(Images::class, ['user_id' => 'id']);
+    }
+    //One user has many todo task
+    public function getTodo()
+    {
+        return $this->hasMany(Todo::class, ['user_id' => 'id']);
     }
 }

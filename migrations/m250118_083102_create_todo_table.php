@@ -16,7 +16,7 @@ class m250118_083102_create_todo_table extends Migration
             'id' => $this->primaryKey(),
             'task_name' => $this->text(),
             'status' => $this->string(),
-            
+            'user_id' => $this->integer(),
         ]);
     }
 

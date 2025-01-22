@@ -11,6 +11,7 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\Images;
 use app\models\SignUpForm;
+use app\models\Todo;
 use app\models\UploadForm;
 use app\models\User;
 use yii\web\BadRequestHttpException;
@@ -223,7 +224,107 @@ class SiteController extends Controller
     }
 
     //Todo-List
-    public function actionTodo(){
+    public function actionTodo()
+    {
         return $this->render('todo');
     }
+    //Add task todo
+    public function actionAddTask()
+    {
+        if (Yii::$app->request->isPost){
+            $data = json_decode(Yii::$app->request->getRawBody(), true);
+            
+            //Kiểm tra có task không
+            if(isset($data['text']) && isset($data['done']) && isset($data['delete'])){
+                $taskData = $data['text'];
+                $taskStatus = $data['done'];
+                $taskDelete = $data['delete'];
+                //Lưu vào trong todo table database
+                $todoModel = new Todo();
+                $todoModel->task_name = $taskData;
+                $todoModel->status = $taskStatus;
+                $todoModel->user_id = Yii::$app->user->identity->id;
+                $todoModel->delete = $taskDelete;
+                if ($todoModel->save()){
+                    return $this->asJson(['success' => true,'id' => $todoModel->id]);
+                }else{
+                    return $this->asJson(['success' => false, 'error' => 'Lưu task và database thất bại!']);
+                }
+            }else{
+                return $this->asJson(['success' => false, 'error' => 'Không nhận được dữ liệu']);
+            }
+        }else{
+            return $this->asJson(['success' => false, 'error' => 'Request không hợp lệ']);
+        }
+    }
+    //Get task from database
+    public function actionGetDataTask()
+    {
+        $clientId = Yii::$app->user->identity->id;
+        
+        $task = (Todo::findAll(['user_id' => $clientId, 'delete' => 0]));
+        
+        $taskAsJson = [];
+
+        if($task != null){
+            foreach($task as $dataTask)
+            {
+            $taskAsJson[] = [
+                'text' => $dataTask->task_name,
+                'done' => $dataTask->status==='complete',
+                'id' => $dataTask->id,
+                'delete' => $dataTask->delete,
+            ];
+            }
+            return json_encode($taskAsJson);
+        }
+        return json_encode($taskAsJson);
+    }
+    //Update task's status
+    public function actionUpdateTaskStatus()
+    {
+        if(Yii::$app->request->isPatch){
+            $data = json_decode(Yii::$app->request->getRawBody(),true);
+            if(isset($data['task_id']) && isset($data['done'])){
+                $task = Todo::find()->where(['id' => $data['task_id']])->one();
+                if($task){
+                    $task->status = $data['done'] ? 'not complete' : 'complete';
+                    if($task->save()){
+                        return $this->asJson(['success' => true]);
+                    }else{
+                        return $this->asJson(['success' => false, 'error' => 'Cập nhật trạng thái task thất bại!']);
+                    }
+                }else{
+                    return $this->asJson(['success'=>false,'error'=>'Không tìm thất task phù hợp với id yêu cầu!']);
+                }
+            }else{
+                return $this->asJson(['success'=>false, 'error'=>'Không có dữ liệu được gửi lên']);
+            }
+        }else{
+            return $this->asJson(['success'=>false,'error'=>'Request không phù hợp']);
+        }
+    }
+    //Soft delete tasks from todo list
+    public function actionSoftDeleteTask(){
+        if(Yii::$app->request->isPatch){
+            $data = json_decode(Yii::$app->request->getRawBody(),true);
+            if(isset($data['task_id']) && isset($data['delete'])){
+                $task = Todo::findOne(['id' => $data['task_id']]);
+                if($task){
+                    $task->delete = 1;
+                    if($task->save()){
+                        return $this->asJson(['success' => true]);
+                    }else{
+                        return $this->asJson(['success' => false, 'error' => 'Lưu thất bại']);
+                    }
+                }else{
+                    return $this->asJson(['success'=>false,'error'=>'Không có task phù hợp với id']);
+                }
+            }else{
+                return $this->asJson(['success'=>false,'error'=>'Không có dữ liệu được gửi lên']);
+            }
+        }else{
+            return $this->asJson(['success'=>false,'error'=>'request không đúng']);
+        }
+    } 
 }
