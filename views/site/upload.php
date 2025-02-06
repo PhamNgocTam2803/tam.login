@@ -1,33 +1,29 @@
 <?php
 use yii\widgets\ActiveForm;
-$array = Yii::$app->user->identity->images;
+$array = Yii::$app->user->identity->images; 
 ?>
 
 <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
 
 
     <?= $form->field($model, 'imageFiles[]')->fileInput(['multiple' => true, 'accept' => 'image/*', 'id' => 'input_image']) ?>
-
-    <button>Upload Image</button>
-
-    <div id="preview_container" style="display:flex; gap: 10px;">
-
-
+    <!-- Upload button -->
+    <button style="background-color: cyan; width: 120px; height: 40px;border-radius: 10px; font-weight: 600 ">Upload Image</button>
+    <!-- Preview container -->
+    <div id="preview_container" style="display:flex; gap: 20px;flex-wrap: wrap; flex-direction: row;">
     </div>
     
 <?php ActiveForm::end() ?>
-
-
+<!-- Section include: Image and Remove button -->
 <?php foreach($array as $image){ ?>
-    <div class="img-block">
+    <div class="img-block" style="width: 35vw;display:flex;align-items: center;margin:20px auto;border:1px solid;border-radius: 10px;justify-content: space-evenly">
         <img src="/<?= $image->path?>" width="400px" >
-        <button type="button" class="remove-button" data-id="<?= $image->id?>">
+        <button style="background-color: pink; width: 120px;height:40px;border-radius: 10px; font-weight: 600;margin:0 20px" type="button" class="remove-button" data-id="<?= $image->id?>">
             Remove
         </button>
     </div>
 <?php } ?>
-
-
+<!-- Config Remove button -->
 <script>
     const removeButton = document.querySelectorAll('.remove-button');
     removeButton.forEach(button => {
@@ -54,10 +50,9 @@ $array = Yii::$app->user->identity->images;
                 console.log(error);
             })
         })
-    })
-              
+    }) 
 </script>
-
+<!-- Preview images container before upload images  -->
 <script>
     document.getElementById('input_image').addEventListener('change', function(event) {
         const files = event.target.files;

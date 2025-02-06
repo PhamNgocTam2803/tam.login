@@ -138,8 +138,7 @@ class SiteController extends Controller
     {
         $model = new SignUpForm();
         // dd(Yii::$app->request->post());
-        if ($model->load(Yii::$app->request->post()))
-        {
+        if ($model->load(Yii::$app->request->post())){
             // dd(Yii::$app->request->post());
             if ($model->saveSignUpForm()){
 
@@ -156,8 +155,7 @@ class SiteController extends Controller
         
     }
 
-    public function actionProfile()
-    {
+    public function actionProfile(){
     // Kiểm tra nếu người dùng chưa đăng nhập, chuyển hướng về trang login
     if (Yii::$app->user->isGuest) {
         return $this->redirect(['site/login']);
@@ -172,8 +170,7 @@ class SiteController extends Controller
     ]);
     }
     //Upload files
-    public function actionUpload()
-    {
+    public function actionUpload(){
         $headers = Yii::$app->request->headers;
         // dd($headers);
         $model = new UploadForm();
@@ -229,8 +226,7 @@ class SiteController extends Controller
         return $this->render('todo');
     }
     //Add task todo
-    public function actionAddTask()
-    {
+    public function actionAddTask(){
         if (Yii::$app->request->isPost){
             $data = json_decode(Yii::$app->request->getRawBody(), true);
             
