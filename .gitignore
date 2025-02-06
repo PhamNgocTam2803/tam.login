@@ -35,3 +35,8 @@ tests/_support/_generated
 node_modules/
 #.env
 .env
+
+#ignore uploads folder
+uploads/
+#ignore webp folder
+webp/
