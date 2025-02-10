@@ -1,8 +1,10 @@
 <?php
+// use GuzzleHttp\Psr7\Request;
+use yii\web\Request;
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
-
+$baseUrl = str_replace(' /web', '', (new Request)->getBaseUrl());
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
@@ -15,6 +17,7 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'S_Aw-giv9kK1_xZ0kpNkN1X0-FRfnYZh',
+            'baseUrl' => $baseUrl,
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -42,8 +45,9 @@ $config = [
             ],
         ],
         'db' => $db,
-        
+
         'urlManager' => [
+            'baseUrl' => $baseUrl,
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
@@ -51,7 +55,7 @@ $config = [
                 'login' => 'site/login',
             ],
         ],
-        
+
     ],
     'params' => $params,
 ];

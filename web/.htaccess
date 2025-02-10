@@ -1,24 +1,9 @@
-
-# RewriteEngine on
-
-# RewriteCond %{REQUEST_URI} ^/.*\.php$
-# RewriteCond %{REQUEST_URI} !^/index.php$
-# RewriteRule . index.php [L]
-
-# RewriteCond %{REQUEST_FILENAME} !-d
-# RewriteCond %{REQUEST_FILENAME} !-f
-# RewriteRule . index.php [L]
-
-Options +SymLinksIfOwnerMatch
-IndexIgnore */*
-
 RewriteEngine on
 
-RewriteBase /
+RewriteCond %{REQUEST_URI} ^/.*\.php$
+RewriteCond %{REQUEST_URI} !^/index.php$
+RewriteRule . index.php [L]
 
-RewriteCond %{REQUEST_URI} !^/web
-RewriteRule ^(.*)$ web/$1 [QSA,L]
-
-RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^web/(.*)$ web/index.php [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule . index.php [L]

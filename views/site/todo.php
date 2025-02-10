@@ -1,6 +1,6 @@
 <div class="w-full h-screen">
-    <div class="flex flex-col justify-between w-[600px] h-[600px] ml-auto mr-auto border-rose-300 mt-5" 
-    x-data="{
+    <div class="flex flex-col justify-between w-[600px] h-[600px] ml-auto mr-auto border-rose-300 mt-5"
+        x-data="{
         tasks: [],
         newTask: '',
         filter: 'all',
@@ -19,6 +19,7 @@
                     if (data.success){
                         this.tasks.push({text: this.newTask, done: false, delete: false, id: data.id}); 
                         this.newTask = '';
+                        alert('Bạn đã add task thành công')
                     }else{
                         alert(data.error);
                     }
@@ -53,6 +54,7 @@
             .then(data => {
                 if (data.success){
                     task.done = !task.done;
+                    alert('Cập nhật trạng thái task thành công')
                 }else{
                     alert(data.error);
                 }
@@ -74,6 +76,7 @@
             .then(data => {
                 if(data.success){
                     this.tasks = this.tasks.filter(x => x.id !== task.id);
+                    alert('Bạn đã xoá thành công')
                 }else{
                     alert(data.error);
                 }
@@ -83,18 +86,18 @@
             });
         }
     }"
-    x-init="tasks = await (await fetch('/site/get-data-task')).json()">
+        x-init="tasks = await (await fetch('/site/get-data-task')).json()">
         <div>
             <div class="flex justify-between">
                 <!-- Tổng kết: tasks đã làm, chưa làm -->
                 <div class="flex pt-5">
                     <p class="font-bold mr-2">To dos: <span x-text="tasks.filter(task => !task.done).length"></span></p>
                     <p class="mr-2">|</p>
-                    <p class="font-bold">Completed:  <span x-text="tasks.filter(task => task.done).length"></span></p>
+                    <p class="font-bold">Completed: <span x-text="tasks.filter(task => task.done).length"></span></p>
                 </div>
                 <!-- Tạo select box -->
-                <div> 
-                    <select class="font-bold mt-5" x-model="filter">
+                <div>
+                    <select class="bg-white font-bold mt-5" x-model="filter">
                         <option value="all">All</option>
                         <option value="complete">Complete</option>
                         <option value="not complete">Not Complete</option>
@@ -105,8 +108,8 @@
             <div x-show="allTaskDone()">
                 <p class="font-bold mt-4">Congrats you finished your list!</p>
             </div>
-            
-            
+
+
             <!-- Danh sách các tasks -->
             <div class="mt-4 ">
                 <h2 class="font-bold mb-3">Todo Task:</h2>
@@ -123,17 +126,16 @@
                 </ul>
             </div>
         </div>
-        
+
         <!-- Button và nhập task -->
         <div class="mb-2">
-            <input class="align-middle w-5/6 border-4  p-2" type="text" placeholder="Add to do item" 
-            class="p-1 mr-10" x-model="newTask">
+            <input class="align-middle w-5/6 border-4  p-2 bg-white" type="text" placeholder="Add to do item"
+                class="p-1 mr-10" x-model="newTask">
             <button class="align-middle  py-2" @click="addTask">
                 <span class="material-symbols-outlined">
-                add
+                    add
                 </span>
             </button>
         </div>
     </div>
-</div>  
-
+</div>
